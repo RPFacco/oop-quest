@@ -6,6 +6,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -19,6 +21,12 @@ import com.jogoopenspec.game.data.MapData;
 import com.jogoopenspec.game.data.MapEntry;
 import com.jogoopenspec.game.data.MapLoader;
 import com.jogoopenspec.game.data.MoveEntity;
+import com.jogoopenspec.game.data.NpcEntity;
+import com.jogoopenspec.game.data.NpcLoader;
+import com.jogoopenspec.game.data.QuizData;
+import com.jogoopenspec.game.data.QuizLoader;
+
+import java.util.Map;
 
 public class GameplayScreen implements Screen {
 
@@ -36,6 +44,11 @@ public class GameplayScreen implements Screen {
     private String currentMapId;
     private Rectangle playerRect;
     private Rectangle entityRect;
+    private Array<NpcEntity> npcs;
+    private Rectangle npcTriggerRect;
+    private Map<String, QuizData> quizzes;
+    private SpriteBatch batch;
+    private BitmapFont font;
 
     public GameplayScreen(Game game) {
         this.game = game;
@@ -59,6 +72,11 @@ public class GameplayScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
         playerRect = new Rectangle();
         entityRect = new Rectangle();
+        npcTriggerRect = new Rectangle();
+        quizzes = QuizLoader.load();
+        batch = new SpriteBatch();
+        font = new BitmapFont();
+        font.getData().setScale(2);
     }
 
     @Override
@@ -67,6 +85,7 @@ public class GameplayScreen implements Screen {
 
         player.update(delta);
         checkMoveEntityOverlap();
+        checkNpcProximity();
         clampPlayerToBounds();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -75,6 +94,11 @@ public class GameplayScreen implements Screen {
         camera.update();
         mapRenderer.setView(camera);
         mapRenderer.render();
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        font.draw(batch, "Lives: " + ((JogoOpenSpec) game).getGameState().lives, 20, MAP_HEIGHT - 20);
+        batch.end();
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -87,6 +111,18 @@ public class GameplayScreen implements Screen {
             }
         }
 
+        if (npcs != null) {
+            GameState gameState = ((JogoOpenSpec) game).getGameState();
+            for (NpcEntity npc : npcs) {
+                if (gameState.completedQuizzes.contains(npc.quizId)) {
+                    shapeRenderer.setColor(128f / 255, 128f / 255, 128f / 255, 1);
+                } else {
+                    shapeRenderer.setColor(1, 165f / 255, 0, 1);
+                }
+                shapeRenderer.rect(npc.x, npc.y, npc.width, npc.height);
+            }
+        }
+
         shapeRenderer.setColor(0.6f, 0.2f, 0.8f, 1);
         shapeRenderer.rect(player.x, player.y, player.width, player.height);
         shapeRenderer.end();
@@ -94,6 +130,8 @@ public class GameplayScreen implements Screen {
 
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.log("GameplayScreen", "ESCAPE pressed, resetting game state");
+            ((JogoOpenSpec) game).getGameState().reset();
             dispose();
             game.setScreen(new MainMenuScreen(game));
             return;
@@ -140,6 +178,35 @@ public class GameplayScreen implements Screen {
         tiledMap = new TmxMapLoader().load(mapEntry.file);
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         currentMapId = mapId;
+
+        npcs = NpcLoader.load().get(mapId);
+    }
+
+    private void checkNpcProximity() {
+        if (npcs == null) return;
+
+        GameState gameState = ((JogoOpenSpec) game).getGameState();
+        playerRect.set(player.x, player.y, player.width, player.height);
+
+        for (NpcEntity npc : npcs) {
+            if (gameState.completedQuizzes.contains(npc.quizId)) continue;
+
+            float triggerWidth = npc.width * 2.0f;
+            float triggerHeight = npc.height * 2.0f;
+            float triggerX = npc.x - (triggerWidth - npc.width) / 2f;
+            float triggerY = npc.y - (triggerHeight - npc.height) / 2f;
+            npcTriggerRect.set(triggerX, triggerY, triggerWidth, triggerHeight);
+
+            if (playerRect.overlaps(npcTriggerRect)) {
+                QuizData quiz = quizzes.get(npc.quizId);
+                if (quiz != null) {
+                    game.setScreen(new QuizScreen(game, this, npc.quizId, quiz));
+                } else {
+                    Gdx.app.log("GameplayScreen", "Quiz ID " + npc.quizId + " not found for NPC at (" + npc.x + ", " + npc.y + ")");
+                }
+                return;
+            }
+        }
     }
 
     private void clampPlayerToBounds() {
@@ -164,5 +231,7 @@ public class GameplayScreen implements Screen {
         if (tiledMap != null) tiledMap.dispose();
         if (mapRenderer != null) mapRenderer.dispose();
         if (shapeRenderer != null) shapeRenderer.dispose();
+        if (batch != null) batch.dispose();
+        if (font != null) font.dispose();
     }
 }

@@ -26,6 +26,9 @@ public class MainMenuScreen implements Screen {
     @Override
     public void render(float delta) {
         if (Gdx.input.justTouched()) {
+            GameState gs = ((JogoOpenSpec) game).getGameState();
+            gs.reset();
+            Gdx.app.log("MainMenuScreen", "reset -> lives=" + gs.lives + " quizzes=" + gs.completedQuizzes.size());
             game.setScreen(new GameplayScreen(game));
             dispose();
             return;

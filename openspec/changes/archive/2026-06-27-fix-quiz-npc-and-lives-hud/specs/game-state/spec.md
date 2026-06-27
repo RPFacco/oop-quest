@@ -1,0 +1,41 @@
+## MODIFIED Requirements
+
+### Requirement: Game starts with 5 lives
+The system SHALL initialize the player with 5 lives when a new game begins.
+
+#### Scenario: New game
+- **WHEN** the game starts from the main menu
+- **THEN** the player SHALL have 5 lives
+
+#### Scenario: Player loses a life
+- **WHEN** the player answers a quiz question incorrectly
+- **THEN** lives SHALL decrease by 1
+- **THEN** the current life count SHALL be reflected in game state
+- **THEN** the current life count SHALL be visible on the gameplay screen
+
+### Requirement: Zero lives triggers game over
+When lives reach zero, the game SHALL transition to a game over state.
+
+#### Scenario: Lives reach zero
+- **WHEN** lives reach 0
+- **THEN** the game SHALL display a Game Over message
+- **THEN** the player SHALL be returned to the main menu
+- **THEN** game state SHALL be reset (lives to 5, completed quizzes cleared)
+
+## ADDED Requirements
+
+### Requirement: Lives are visible during gameplay
+The system SHALL display the current life count on the gameplay screen at all times.
+
+#### Scenario: Gameplay screen visible
+- **WHEN** the gameplay screen is active
+- **THEN** the current lives count SHALL be displayed as text in the top-left corner
+- **THEN** the lives display SHALL update immediately when a life is lost
+
+### Requirement: Game state resets when starting a new game
+When the player returns to the main menu and starts a new game, game state SHALL be fully reset.
+
+#### Scenario: Player starts new game after game over
+- **WHEN** the player clicks to start a new game
+- **THEN** lives SHALL be reset to 5
+- **THEN** completed quizzes SHALL be cleared

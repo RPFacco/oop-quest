@@ -1,0 +1,22 @@
+{
+  "1": {
+    "question": "What is encapsulation in OOP?",
+    "choices": [
+      "Hiding internal details and exposing an interface",
+      "Creating multiple instances of a class",
+      "Inheriting behavior from a parent class",
+      "Overriding a method from the superclass"
+    ],
+    "correct": 0
+  },
+  "2": {
+    "question": "What does the 'new' keyword do in Java?",
+    "choices": [
+      "Creates a new variable",
+      "Allocates memory for a new object",
+      "Declares a new class",
+      "Defines a new method"
+    ],
+    "correct": 1
+  }
+}
