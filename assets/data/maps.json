@@ -1,0 +1,14 @@
+{
+  "startMap": "map01",
+  "maps": {
+    "map01": {
+      "file": "maps/map01.tmx",
+      "connections": {
+        "north": null,
+        "south": null,
+        "east": null,
+        "west": null
+      }
+    }
+  }
+}
