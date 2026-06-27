@@ -2,6 +2,7 @@ package com.jogoopenspec.game.data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -21,24 +22,25 @@ public class MapLoader {
             mapEntry.id = entry.name;
             mapEntry.file = entry.getString("file");
 
-            JsonValue conn = entry.get("connections");
-            MapConnections connections = new MapConnections();
-            connections.north = readConnection(conn, "north");
-            connections.south = readConnection(conn, "south");
-            connections.east = readConnection(conn, "east");
-            connections.west = readConnection(conn, "west");
-            mapEntry.connections = connections;
+            JsonValue entities = entry.get("moveEntities");
+            if (entities != null) {
+                mapEntry.moveEntities = new Array<>();
+                for (JsonValue me = entities.child; me != null; me = me.next) {
+                    MoveEntity move = new MoveEntity();
+                    move.x = me.getFloat("x");
+                    move.y = me.getFloat("y");
+                    move.width = me.getFloat("width");
+                    move.height = me.getFloat("height");
+                    move.targetMap = me.getString("targetMap");
+                    move.spawnX = me.getFloat("spawnX");
+                    move.spawnY = me.getFloat("spawnY");
+                    mapEntry.moveEntities.add(move);
+                }
+            }
 
             data.maps.put(mapEntry.id, mapEntry);
         }
 
         return data;
-    }
-
-    private static String readConnection(JsonValue conn, String direction) {
-        if (!conn.has(direction)) return null;
-        JsonValue val = conn.get(direction);
-        if (val == null || val.isNull()) return null;
-        return val.asString();
     }
 }

@@ -10,12 +10,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jogoopenspec.game.data.MapData;
 import com.jogoopenspec.game.data.MapEntry;
 import com.jogoopenspec.game.data.MapLoader;
+import com.jogoopenspec.game.data.MoveEntity;
 
 public class GameplayScreen implements Screen {
 
@@ -29,6 +32,10 @@ public class GameplayScreen implements Screen {
     private OrthogonalTiledMapRenderer mapRenderer;
     private Player player;
     private ShapeRenderer shapeRenderer;
+    private MapData mapData;
+    private String currentMapId;
+    private Rectangle playerRect;
+    private Rectangle entityRect;
 
     public GameplayScreen(Game game) {
         this.game = game;
@@ -41,16 +48,17 @@ public class GameplayScreen implements Screen {
         camera.position.set(MAP_WIDTH / 2f, MAP_HEIGHT / 2f, 0);
         camera.update();
 
-        MapData mapData = MapLoader.load();
-        MapEntry mapEntry = mapData.maps.get(mapData.startMap);
-        tiledMap = new TmxMapLoader().load(mapEntry.file);
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        mapData = MapLoader.load();
+        currentMapId = mapData.startMap;
+        loadMap(currentMapId);
 
         float playerX = MAP_WIDTH / 2f - 12;
         float playerY = MAP_HEIGHT / 2f - 12;
         player = new Player(playerX, playerY);
 
         shapeRenderer = new ShapeRenderer();
+        playerRect = new Rectangle();
+        entityRect = new Rectangle();
     }
 
     @Override
@@ -58,6 +66,7 @@ public class GameplayScreen implements Screen {
         handleInput();
 
         player.update(delta);
+        checkMoveEntityOverlap();
         clampPlayerToBounds();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -69,6 +78,15 @@ public class GameplayScreen implements Screen {
 
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        Array<MoveEntity> entities = mapData.maps.get(currentMapId).moveEntities;
+        if (entities != null) {
+            shapeRenderer.setColor(1, 215f / 255, 0, 1);
+            for (MoveEntity me : entities) {
+                shapeRenderer.rect(me.x, me.y, me.width, me.height);
+            }
+        }
+
         shapeRenderer.setColor(0.2f, 0.6f, 1f, 1);
         shapeRenderer.rect(player.x, player.y, player.width, player.height);
         shapeRenderer.end();
@@ -90,6 +108,38 @@ public class GameplayScreen implements Screen {
                 player.setTarget(touchPos.x, touchPos.y);
             }
         }
+    }
+
+    private void checkMoveEntityOverlap() {
+        Array<MoveEntity> entities = mapData.maps.get(currentMapId).moveEntities;
+        if (entities == null) return;
+
+        playerRect.set(player.x, player.y, player.width, player.height);
+
+        for (MoveEntity me : entities) {
+            entityRect.set(me.x, me.y, me.width, me.height);
+            if (playerRect.overlaps(entityRect)) {
+                transitionTo(me);
+                return;
+            }
+        }
+    }
+
+    private void transitionTo(MoveEntity me) {
+        loadMap(me.targetMap);
+        player.x = me.spawnX;
+        player.y = me.spawnY;
+        player.setTarget(player.x, player.y);
+    }
+
+    private void loadMap(String mapId) {
+        if (tiledMap != null) tiledMap.dispose();
+        if (mapRenderer != null) mapRenderer.dispose();
+
+        MapEntry mapEntry = mapData.maps.get(mapId);
+        tiledMap = new TmxMapLoader().load(mapEntry.file);
+        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        currentMapId = mapId;
     }
 
     private void clampPlayerToBounds() {
