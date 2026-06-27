@@ -9,7 +9,7 @@ A 2D top-down educational game in which the player explores interconnected maps,
 ## Core Mechanics
 
 ### Movement
-The player moves by clicking a destination on the map (mouse-driven movement). The player navigates through a top-down view. Upon reaching a map border, a transition occurs to the map connected to that direction, if one exists — otherwise the border is a dead end.
+The player moves by clicking a destination on the map (mouse-driven movement). The player navigates through a top-down view. The player is clamped to the map bounds at all times.
 
 ### Lives
 The player starts with **5 lives**. Lives are lost by:
@@ -69,15 +69,17 @@ Each NPC has a specific, fixed quiz. The quiz bank is stored in `assets/data/qui
 
 ## Maps
 
-Each map fits the **screen size** — the camera does not follow the player. Movement is confined to the visible area. When the player reaches one of the four borders (north, south, east, west), a transition occurs to the connected map, if one exists.
+Each map fits the **screen size** — the camera does not follow the player. Movement is confined to the visible area and the player is clamped to the map bounds.
 
 Maps may contain **internal obstacles** with collision hitboxes (e.g. trees, walls, furniture).
 
+Maps may also contain **move entities** — colored rectangles visible on the map. When the player overlaps with a move entity, they are teleported to the target map at a defined spawn position. The spawn position is placed away from any move entities on the destination map to prevent immediate re-triggering.
+
 The architecture is **data-driven**: adding a new map requires no changes to any `.java` file. The process is:
 1. Create `assets/maps/new-map.tmx` in Tiled with layout, NPCs, and custom properties (`quiz_id` per NPC)
-2. Register the map and its directional connections in `assets/data/maps.json`
+2. Register the map and its move entities in `assets/data/maps.json`
 
-Map transitions are **directional** — each border (north, south, east, west) can be connected to a specific map, configured in `maps.json`. The player can move freely between connected maps.
+Move entities are the **only** way to transition between maps — borders are always dead ends.
 
 Schema for `maps.json`:
 
@@ -87,21 +89,31 @@ Schema for `maps.json`:
   "maps": {
     "map01": {
       "file": "maps/map01.tmx",
-      "connections": {
-        "north": null,
-        "south": "map02",
-        "east": null,
-        "west": null
-      }
+      "moveEntities": [
+        {
+          "x": 300, "y": 200,
+          "width": 32, "height": 80,
+          "targetMap": "map02",
+          "spawnX": 40, "spawnY": 40
+        }
+      ]
     },
     "map02": {
       "file": "maps/map02.tmx",
-      "connections": {
-        "north": "map01",
-        "south": null,
-        "east": null,
-        "west": null
-      }
+      "moveEntities": [
+        {
+          "x": 300, "y": 60,
+          "width": 32, "height": 80,
+          "targetMap": "map03",
+          "spawnX": 40, "spawnY": 40
+        },
+        {
+          "x": 300, "y": 380,
+          "width": 32, "height": 80,
+          "targetMap": "map01",
+          "spawnX": 40, "spawnY": 40
+        }
+      ]
     }
   }
 }
@@ -110,8 +122,11 @@ Schema for `maps.json`:
 - `startMap`: which map the player loads when the game starts
 - `maps`: dictionary indexed by map ID
 - `file`: path relative to the `assets/` directory
-- `connections`: each direction can point to another map ID, or `null` (dead end)
-- When transitioning through a border, the player spawns on the opposite border of the destination map
+- `moveEntities`: array of transition zones, each with:
+  - `x`, `y`: top-left position on the map (pixels)
+  - `width`, `height`: size of the transition zone (pixels)
+  - `targetMap`: the map ID to transition to
+  - `spawnX`, `spawnY`: position where the player appears on the target map
 
 ### Asset structure
 
