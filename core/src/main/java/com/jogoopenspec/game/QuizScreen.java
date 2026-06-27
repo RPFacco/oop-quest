@@ -1,6 +1,5 @@
 package com.jogoopenspec.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -15,13 +14,14 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.jogoopenspec.game.data.QuizData;
 import com.jogoopenspec.game.data.QuizLoader;
+import com.jogoopenspec.game.JogoOpenSpec;
 
 public class QuizScreen implements Screen {
 
     private static final float SCREEN_WIDTH = 1920;
     private static final float SCREEN_HEIGHT = 1080;
 
-    private final Game game;
+    private final JogoOpenSpec jogoGame;
     private final Screen gameplayScreen;
     private final String quizId;
     private final QuizData quiz;
@@ -36,8 +36,8 @@ public class QuizScreen implements Screen {
     private GlyphLayout glyphLayout;
     private boolean gameOver;
 
-    public QuizScreen(Game game, Screen gameplayScreen, String quizId, QuizData quiz) {
-        this.game = game;
+    public QuizScreen(JogoOpenSpec jogoGame, Screen gameplayScreen, String quizId, QuizData quiz) {
+        this.jogoGame = jogoGame;
         this.gameplayScreen = gameplayScreen;
         this.quizId = quizId;
         this.quiz = quiz;
@@ -94,7 +94,7 @@ public class QuizScreen implements Screen {
             font.draw(batch, (i + 1) + ". " + quiz.choices[i], textX, textY);
         }
 
-        GameState gameState = ((JogoOpenSpec) game).getGameState();
+        GameState gameState = jogoGame.getGameState();
         font.draw(batch, "Lives: " + gameState.lives, 30, SCREEN_HEIGHT - 30);
 
         batch.end();
@@ -108,12 +108,12 @@ public class QuizScreen implements Screen {
         shapeRenderer.end();
 
         if (gameOver) {
-            GameState gs = ((JogoOpenSpec) game).getGameState();
+            GameState gs = jogoGame.getGameState();
             Gdx.app.log("QuizScreen", "gameOver, resetting state");
             gs.reset();
             Gdx.app.log("QuizScreen", "after reset -> lives=" + gs.lives + " quizzes=" + gs.completedQuizzes.size());
             dispose();
-            game.setScreen(new MainMenuScreen(game));
+            jogoGame.setScreen(new MainMenuScreen(jogoGame));
         }
     }
 
@@ -125,16 +125,16 @@ public class QuizScreen implements Screen {
 
         for (int i = 0; i < choiceRects.length; i++) {
             if (choiceRects[i].contains(touchPos.x, touchPos.y)) {
-                GameState gameState = ((JogoOpenSpec) game).getGameState();
+                GameState gameState = jogoGame.getGameState();
 
                 if (i == quiz.correct) {
                     gameState.completedQuizzes.add(quizId);
                     if (gameState.completedQuizzes.size() >= QuizLoader.load().size()) {
                         Gdx.app.log("QuizScreen", "all quizzes completed, resetting");
                         gameState.reset();
-                        game.setScreen(new MainMenuScreen(game));
+                        jogoGame.setScreen(new MainMenuScreen(jogoGame));
                     } else {
-                        game.setScreen(gameplayScreen);
+                        jogoGame.setScreen(gameplayScreen);
                     }
                 } else {
                     gameState.lives--;

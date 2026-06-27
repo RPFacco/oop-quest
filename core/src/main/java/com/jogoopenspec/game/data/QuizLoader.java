@@ -10,14 +10,21 @@ import java.util.Map;
 
 public class QuizLoader {
 
+    private static Map<String, QuizData> cache;
+
     public static Map<String, QuizData> load() {
+        if (cache != null) return cache;
+
         FileHandle file = Gdx.files.internal("data/quizzes.json");
-        if (!file.exists()) return new HashMap<>();
+        if (!file.exists()) {
+            cache = new HashMap<>();
+            return cache;
+        }
 
         JsonReader reader = new JsonReader();
         JsonValue root = reader.parse(file);
 
-        Map<String, QuizData> result = new HashMap<>();
+        cache = new HashMap<>();
         for (JsonValue entry = root.child; entry != null; entry = entry.next) {
             QuizData quiz = new QuizData();
             quiz.question = entry.getString("question");
@@ -27,8 +34,8 @@ public class QuizLoader {
                 quiz.choices[i] = choicesArr.getString(i);
             }
             quiz.correct = entry.getInt("correct");
-            result.put(entry.name, quiz);
+            cache.put(entry.name, quiz);
         }
-        return result;
+        return cache;
     }
 }

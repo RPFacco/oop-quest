@@ -1,6 +1,5 @@
 package com.jogoopenspec.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -25,6 +24,7 @@ import com.jogoopenspec.game.data.NpcEntity;
 import com.jogoopenspec.game.data.NpcLoader;
 import com.jogoopenspec.game.data.QuizData;
 import com.jogoopenspec.game.data.QuizLoader;
+import com.jogoopenspec.game.JogoOpenSpec;
 
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class GameplayScreen implements Screen {
     private static final float MAP_WIDTH = 1920;
     private static final float MAP_HEIGHT = 1080;
 
-    private final Game game;
+    private final JogoOpenSpec jogoGame;
     private OrthographicCamera camera;
     private Viewport viewport;
     private TiledMap tiledMap;
@@ -50,8 +50,8 @@ public class GameplayScreen implements Screen {
     private SpriteBatch batch;
     private BitmapFont font;
 
-    public GameplayScreen(Game game) {
-        this.game = game;
+    public GameplayScreen(JogoOpenSpec jogoGame) {
+        this.jogoGame = jogoGame;
     }
 
     @Override
@@ -97,7 +97,7 @@ public class GameplayScreen implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        font.draw(batch, "Lives: " + ((JogoOpenSpec) game).getGameState().lives, 20, MAP_HEIGHT - 20);
+        font.draw(batch, "Lives: " + jogoGame.getGameState().lives, 20, MAP_HEIGHT - 20);
         batch.end();
 
         shapeRenderer.setProjectionMatrix(camera.combined);
@@ -112,7 +112,7 @@ public class GameplayScreen implements Screen {
         }
 
         if (npcs != null) {
-            GameState gameState = ((JogoOpenSpec) game).getGameState();
+            GameState gameState = jogoGame.getGameState();
             for (NpcEntity npc : npcs) {
                 if (gameState.completedQuizzes.contains(npc.quizId)) {
                     shapeRenderer.setColor(128f / 255, 128f / 255, 128f / 255, 1);
@@ -131,9 +131,9 @@ public class GameplayScreen implements Screen {
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.log("GameplayScreen", "ESCAPE pressed, resetting game state");
-            ((JogoOpenSpec) game).getGameState().reset();
+            jogoGame.getGameState().reset();
             dispose();
-            game.setScreen(new MainMenuScreen(game));
+            jogoGame.setScreen(new MainMenuScreen(jogoGame));
             return;
         }
 
@@ -185,7 +185,7 @@ public class GameplayScreen implements Screen {
     private void checkNpcProximity() {
         if (npcs == null) return;
 
-        GameState gameState = ((JogoOpenSpec) game).getGameState();
+        GameState gameState = jogoGame.getGameState();
         playerRect.set(player.x, player.y, player.width, player.height);
 
         for (NpcEntity npc : npcs) {
@@ -200,7 +200,7 @@ public class GameplayScreen implements Screen {
             if (playerRect.overlaps(npcTriggerRect)) {
                 QuizData quiz = quizzes.get(npc.quizId);
                 if (quiz != null) {
-                    game.setScreen(new QuizScreen(game, this, npc.quizId, quiz));
+                    jogoGame.setScreen(new QuizScreen(jogoGame, this, npc.quizId, quiz));
                 } else {
                     Gdx.app.log("GameplayScreen", "Quiz ID " + npc.quizId + " not found for NPC at (" + npc.x + ", " + npc.y + ")");
                 }

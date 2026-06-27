@@ -1,20 +1,20 @@
 package com.jogoopenspec.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.jogoopenspec.game.JogoOpenSpec;
 
 public class MainMenuScreen implements Screen {
 
-    private final Game game;
+    private final JogoOpenSpec jogoGame;
     private SpriteBatch batch;
     private BitmapFont font;
 
-    public MainMenuScreen(Game game) {
-        this.game = game;
+    public MainMenuScreen(JogoOpenSpec jogoGame) {
+        this.jogoGame = jogoGame;
     }
 
     @Override
@@ -26,10 +26,10 @@ public class MainMenuScreen implements Screen {
     @Override
     public void render(float delta) {
         if (Gdx.input.justTouched()) {
-            GameState gs = ((JogoOpenSpec) game).getGameState();
+            GameState gs = jogoGame.getGameState();
             gs.reset();
             Gdx.app.log("MainMenuScreen", "reset -> lives=" + gs.lives + " quizzes=" + gs.completedQuizzes.size());
-            game.setScreen(new GameplayScreen(game));
+            jogoGame.setScreen(new GameplayScreen(jogoGame));
             dispose();
             return;
         }
