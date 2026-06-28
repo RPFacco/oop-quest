@@ -1,4 +1,4 @@
-package com.jogoopenspec.game;
+package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,20 +16,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.jogoopenspec.game.data.MapData;
-import com.jogoopenspec.game.data.MapEntry;
-import com.jogoopenspec.game.data.MapLoader;
-import com.jogoopenspec.game.data.MoveEntity;
-import com.jogoopenspec.game.data.NpcLoader;
-import com.jogoopenspec.game.data.QuizData;
-import com.jogoopenspec.game.JogoOpenSpec;
+import com.rpfacco.oopquest.game.data.MapData;
+import com.rpfacco.oopquest.game.data.MapEntry;
+import com.rpfacco.oopquest.game.data.MapLoader;
+import com.rpfacco.oopquest.game.data.MoveEntity;
+import com.rpfacco.oopquest.game.data.NpcLoader;
+import com.rpfacco.oopquest.game.data.QuizData;
+import com.rpfacco.oopquest.game.OopQuest;
 
 public class GameplayScreen implements Screen {
 
     private static final float MAP_WIDTH = 1920;
     private static final float MAP_HEIGHT = 1080;
 
-    private final JogoOpenSpec jogoGame;
+    private final OopQuest jogoGame;
     private OrthographicCamera camera;
     private Viewport viewport;
     private TiledMap tiledMap;
@@ -45,7 +45,7 @@ public class GameplayScreen implements Screen {
     private BitmapFont font;
     private boolean initialized;
 
-    public GameplayScreen(JogoOpenSpec jogoGame) {
+    public GameplayScreen(OopQuest jogoGame) {
         this.jogoGame = jogoGame;
     }
 

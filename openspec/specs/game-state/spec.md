@@ -54,7 +54,7 @@ When the player returns to the main menu and starts a new game, game state SHALL
 - **THEN** completed quizzes SHALL be cleared
 
 ### Requirement: Game state is held at the Game level
-Game state (lives, completed quizzes) SHALL live in the `JogoOpenSpec` class so it persists across screen transitions.
+Game state (lives, completed quizzes) SHALL live in the `OopQuest` class so it persists across screen transitions.
 
 #### Scenario: Screen transitions preserve state
 - **WHEN** transitioning from `GameplayScreen` to `QuizScreen` and back

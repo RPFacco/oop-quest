@@ -1,4 +1,4 @@
-package com.jogoopenspec.game.data;
+package com.rpfacco.oopquest.game.data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

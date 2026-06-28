@@ -1,4 +1,4 @@
-package com.jogoopenspec.game;
+package com.rpfacco.oopquest.game;
 
 public class Player {
 

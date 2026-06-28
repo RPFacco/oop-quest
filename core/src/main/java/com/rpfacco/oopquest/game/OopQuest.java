@@ -1,8 +1,8 @@
-package com.jogoopenspec.game;
+package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.Game;
 
-public class JogoOpenSpec extends Game {
+public class OopQuest extends Game {
     private GameState gameState;
 
     @Override

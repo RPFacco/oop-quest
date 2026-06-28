@@ -1,4 +1,4 @@
-package com.jogoopenspec.game.data;
+package com.rpfacco.oopquest.game.data;
 
 public class MoveEntity {
     public float x;

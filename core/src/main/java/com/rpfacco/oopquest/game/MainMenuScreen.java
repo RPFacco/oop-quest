@@ -1,19 +1,19 @@
-package com.jogoopenspec.game;
+package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.jogoopenspec.game.JogoOpenSpec;
+import com.rpfacco.oopquest.game.OopQuest;
 
 public class MainMenuScreen implements Screen {
 
-    private final JogoOpenSpec jogoGame;
+    private final OopQuest jogoGame;
     private SpriteBatch batch;
     private BitmapFont font;
 
-    public MainMenuScreen(JogoOpenSpec jogoGame) {
+    public MainMenuScreen(OopQuest jogoGame) {
         this.jogoGame = jogoGame;
     }
 
@@ -38,7 +38,7 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        font.draw(batch, "JogoOpenSpec", 100, 200);
+        font.draw(batch, "OopQuest", 100, 200);
         font.draw(batch, "Click to Start", 100, 160);
         batch.end();
     }

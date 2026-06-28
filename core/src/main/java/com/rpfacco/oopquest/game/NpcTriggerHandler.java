@@ -1,6 +1,6 @@
-package com.jogoopenspec.game;
+package com.rpfacco.oopquest.game;
 
-import com.jogoopenspec.game.data.QuizData;
+import com.rpfacco.oopquest.game.data.QuizData;
 
 @FunctionalInterface
 public interface NpcTriggerHandler {

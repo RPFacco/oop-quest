@@ -1,4 +1,4 @@
-# Game Design — JogoOpenSpec
+# Game Design — OopQuest
 
 ## Concept
 

@@ -1,12 +1,12 @@
-package com.jogoopenspec.game;
+package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.jogoopenspec.game.data.NpcEntity;
-import com.jogoopenspec.game.data.QuizData;
-import com.jogoopenspec.game.data.QuizLoader;
+import com.rpfacco.oopquest.game.data.NpcEntity;
+import com.rpfacco.oopquest.game.data.QuizData;
+import com.rpfacco.oopquest.game.data.QuizLoader;
 
 import java.util.Map;
 

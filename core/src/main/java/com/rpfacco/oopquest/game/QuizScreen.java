@@ -1,4 +1,4 @@
-package com.jogoopenspec.game;
+package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,16 +12,16 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.jogoopenspec.game.data.QuizData;
-import com.jogoopenspec.game.data.QuizLoader;
-import com.jogoopenspec.game.JogoOpenSpec;
+import com.rpfacco.oopquest.game.data.QuizData;
+import com.rpfacco.oopquest.game.data.QuizLoader;
+import com.rpfacco.oopquest.game.OopQuest;
 
 public class QuizScreen implements Screen {
 
     private static final float SCREEN_WIDTH = 1920;
     private static final float SCREEN_HEIGHT = 1080;
 
-    private final JogoOpenSpec jogoGame;
+    private final OopQuest jogoGame;
     private final Screen gameplayScreen;
     private final String quizId;
     private final QuizData quiz;
@@ -36,7 +36,7 @@ public class QuizScreen implements Screen {
     private GlyphLayout glyphLayout;
     private boolean gameOver;
 
-    public QuizScreen(JogoOpenSpec jogoGame, Screen gameplayScreen, String quizId, QuizData quiz) {
+    public QuizScreen(OopQuest jogoGame, Screen gameplayScreen, String quizId, QuizData quiz) {
         this.jogoGame = jogoGame;
         this.gameplayScreen = gameplayScreen;
         this.quizId = quizId;
