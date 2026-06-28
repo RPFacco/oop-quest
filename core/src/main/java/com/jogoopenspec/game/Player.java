@@ -6,7 +6,7 @@ public class Player {
     public float y;
     public float width = 24;
     public float height = 24;
-    public float speed = 160f;
+    public float speed = 320f;
 
     private float targetX;
     private float targetY;

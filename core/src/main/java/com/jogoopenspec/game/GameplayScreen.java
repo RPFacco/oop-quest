@@ -43,6 +43,7 @@ public class GameplayScreen implements Screen {
     private NpcSystem npcSystem;
     private SpriteBatch batch;
     private BitmapFont font;
+    private boolean initialized;
 
     public GameplayScreen(JogoOpenSpec jogoGame) {
         this.jogoGame = jogoGame;
@@ -50,6 +51,9 @@ public class GameplayScreen implements Screen {
 
     @Override
     public void show() {
+        if (initialized) return;
+        initialized = true;
+
         camera = new OrthographicCamera();
         viewport = new FitViewport(MAP_WIDTH, MAP_HEIGHT, camera);
         camera.position.set(MAP_WIDTH / 2f, MAP_HEIGHT / 2f, 0);
@@ -168,6 +172,7 @@ public class GameplayScreen implements Screen {
     }
 
     private void onNpcTrigger(String quizId, QuizData quiz) {
+        player.setTarget(player.x, player.y);
         jogoGame.setScreen(new QuizScreen(jogoGame, this, quizId, quiz));
     }
 
