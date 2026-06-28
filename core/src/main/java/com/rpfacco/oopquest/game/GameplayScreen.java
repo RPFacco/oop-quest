@@ -20,6 +20,7 @@ import com.rpfacco.oopquest.game.data.MapData;
 import com.rpfacco.oopquest.game.data.MapEntry;
 import com.rpfacco.oopquest.game.data.MapLoader;
 import com.rpfacco.oopquest.game.data.MoveEntity;
+import com.rpfacco.oopquest.game.data.EnemyLoader;
 import com.rpfacco.oopquest.game.data.NpcLoader;
 import com.rpfacco.oopquest.game.data.QuizData;
 import com.rpfacco.oopquest.game.OopQuest;
@@ -41,6 +42,7 @@ public class GameplayScreen implements Screen {
     private Rectangle playerRect;
     private Rectangle entityRect;
     private NpcSystem npcSystem;
+    private EnemySystem enemySystem;
     private SpriteBatch batch;
     private BitmapFont font;
     private boolean initialized;
@@ -61,6 +63,7 @@ public class GameplayScreen implements Screen {
         camera.update();
 
         npcSystem = new NpcSystem();
+        enemySystem = new EnemySystem();
 
         mapData = MapLoader.load();
         currentMapId = mapData.startMap;
@@ -89,6 +92,7 @@ public class GameplayScreen implements Screen {
         }
 
         player.update(delta);
+        enemySystem.update(delta);
         checkMoveEntityOverlap();
         playerRect.set(player.x, player.y, player.width, player.height);
         npcSystem.checkProximity(playerRect, jogoGame.getGameState(), this::onNpcTrigger);
@@ -118,6 +122,7 @@ public class GameplayScreen implements Screen {
         }
 
         npcSystem.render(shapeRenderer, jogoGame.getGameState());
+        enemySystem.render(shapeRenderer);
 
         shapeRenderer.setColor(0.6f, 0.2f, 0.8f, 1);
         shapeRenderer.rect(player.x, player.y, player.width, player.height);
@@ -173,6 +178,7 @@ public class GameplayScreen implements Screen {
         currentMapId = mapId;
 
         npcSystem.setNpcs(NpcLoader.load().get(mapId));
+        enemySystem.setEnemies(EnemyLoader.load().get(mapId));
     }
 
     private void onNpcTrigger(String quizId, QuizData quiz) {
