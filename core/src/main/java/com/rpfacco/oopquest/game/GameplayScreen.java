@@ -15,12 +15,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import java.util.function.Consumer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.rpfacco.oopquest.game.data.MapData;
 import com.rpfacco.oopquest.game.data.MapEntry;
 import com.rpfacco.oopquest.game.data.MapLoader;
 import com.rpfacco.oopquest.game.data.MoveEntity;
 import com.rpfacco.oopquest.game.data.EnemyLoader;
+import com.rpfacco.oopquest.game.data.ProjectileEntity;
 import com.rpfacco.oopquest.game.data.NpcLoader;
 import com.rpfacco.oopquest.game.data.QuizData;
 import com.rpfacco.oopquest.game.OopQuest;
@@ -48,6 +50,7 @@ public class GameplayScreen implements Screen {
     private BitmapFont font;
     private boolean initialized;
     private boolean leaving;
+    private boolean gameOver;
 
     public GameplayScreen(OopQuest jogoGame) {
         this.jogoGame = jogoGame;
@@ -96,7 +99,13 @@ public class GameplayScreen implements Screen {
         player.update(delta);
         enemySystem.update(delta);
         enemySystem.updateShooting(player, delta, projectileSystem);
-        projectileSystem.update(delta);
+        projectileSystem.update(player, delta, this::onProjectileHit);
+        if (gameOver) {
+            jogoGame.getGameState().reset();
+            dispose();
+            jogoGame.setScreen(new MainMenuScreen(jogoGame));
+            return;
+        }
         checkMoveEntityOverlap();
         playerRect.set(player.x, player.y, player.width, player.height);
         npcSystem.checkProximity(playerRect, jogoGame.getGameState(), this::onNpcTrigger);
@@ -129,8 +138,10 @@ public class GameplayScreen implements Screen {
         enemySystem.render(shapeRenderer);
         projectileSystem.render(shapeRenderer);
 
-        shapeRenderer.setColor(0.6f, 0.2f, 0.8f, 1);
-        shapeRenderer.rect(player.x, player.y, player.width, player.height);
+        if (!(player.invincibleTimer > 0 && (int)(player.invincibleTimer * 10) % 2 == 0)) {
+            shapeRenderer.setColor(0.6f, 0.2f, 0.8f, 1);
+            shapeRenderer.rect(player.x, player.y, player.width, player.height);
+        }
         shapeRenderer.end();
     }
 
@@ -190,6 +201,15 @@ public class GameplayScreen implements Screen {
     private void onNpcTrigger(String quizId, QuizData quiz) {
         player.setTarget(player.x, player.y);
         jogoGame.setScreen(new QuizScreen(jogoGame, this, quizId, quiz));
+    }
+
+    private void onProjectileHit(ProjectileEntity p) {
+        if (player.invincibleTimer > 0) return;
+        jogoGame.getGameState().lives--;
+        player.invincibleTimer = 1f;
+        if (jogoGame.getGameState().lives <= 0) {
+            gameOver = true;
+        }
     }
 
     private void clampPlayerToBounds() {

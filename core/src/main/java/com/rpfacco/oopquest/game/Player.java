@@ -7,6 +7,7 @@ public class Player {
     public float width = 24;
     public float height = 24;
     public float speed = 320f;
+    public float invincibleTimer;
 
     private float targetX;
     private float targetY;
@@ -29,6 +30,7 @@ public class Player {
     }
 
     public void update(float delta) {
+        if (invincibleTimer > 0) invincibleTimer = Math.max(0, invincibleTimer - delta);
         if (!moving) return;
 
         float dx = targetX - x;
