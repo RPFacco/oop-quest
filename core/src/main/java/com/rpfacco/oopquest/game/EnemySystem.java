@@ -42,6 +42,22 @@ public class EnemySystem {
         }
     }
 
+    public EnemyEntity findNearest(Player player) {
+        if (enemies == null || enemies.size == 0) return null;
+        EnemyEntity nearest = null;
+        float minDist = Float.MAX_VALUE;
+        for (EnemyEntity enemy : enemies) {
+            float dx = enemy.getCenterX() - player.getCenterX();
+            float dy = enemy.getCenterY() - player.getCenterY();
+            float dist = dx * dx + dy * dy;
+            if (dist < minDist) {
+                minDist = dist;
+                nearest = enemy;
+            }
+        }
+        return nearest;
+    }
+
     public Array<EnemyEntity> getEnemies() {
         return enemies;
     }

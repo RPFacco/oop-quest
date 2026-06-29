@@ -45,6 +45,7 @@ public class GameplayScreen implements Screen {
     private BitmapFont font;
     private InputHandler inputHandler;
     private HudRenderer hudRenderer;
+    private float homingCooldown;
     private boolean initialized;
     private boolean leaving;
     private boolean gameOver;
@@ -84,6 +85,7 @@ public class GameplayScreen implements Screen {
 
         inputHandler = new InputHandler(viewport);
         hudRenderer = new HudRenderer(batch, font);
+        homingCooldown = 0f;
     }
 
     @Override
@@ -96,10 +98,11 @@ public class GameplayScreen implements Screen {
             return;
         }
 
+        homingCooldown = Math.max(0, homingCooldown - delta);
         player.update(delta);
         enemySystem.update(delta);
         enemySystem.updateShooting(player, delta, projectileSystem);
-        projectileSystem.update(player, delta, this::onProjectileHit);
+        projectileSystem.update(player, delta, enemySystem.getEnemies(), this::onProjectileHit);
         if (gameOver) {
             jogoGame.getGameState().reset();
             dispose();
@@ -149,6 +152,26 @@ public class GameplayScreen implements Screen {
         if (inputHandler.isEscPressed()) {
             leaving = true;
             return;
+        }
+
+        if (inputHandler.isEPressed() && homingCooldown <= 0) {
+            EnemyEntity target = enemySystem.findNearest(player);
+            if (target != null) {
+                ProjectileEntity p = new ProjectileEntity();
+                p.setX(player.getCenterX());
+                p.setY(player.getCenterY());
+                float dx = target.getCenterX() - player.getCenterX();
+                float dy = target.getCenterY() - player.getCenterY();
+                float dist = (float) Math.sqrt(dx * dx + dy * dy);
+                if (dist == 0) dist = 1f;
+                p.setVx(dx / dist);
+                p.setVy(dy / dist);
+                p.setSpeed(400f);
+                p.setSize(8);
+                p.setAlive(true);
+                projectileSystem.add(p, new HomingBehavior(3f));
+                homingCooldown = 0.5f;
+            }
         }
 
         Vector3 touchPos = inputHandler.handleTouch();

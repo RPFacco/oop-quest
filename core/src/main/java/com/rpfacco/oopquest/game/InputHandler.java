@@ -24,4 +24,8 @@ public class InputHandler {
     public boolean isEscPressed() {
         return Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE);
     }
+
+    public boolean isEPressed() {
+        return Gdx.input.isKeyJustPressed(Input.Keys.E);
+    }
 }
