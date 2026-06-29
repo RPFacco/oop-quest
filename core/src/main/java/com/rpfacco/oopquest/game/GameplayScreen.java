@@ -61,7 +61,6 @@ public class GameplayScreen extends BaseScreen {
         InputResult input = inputController.handleInput(delta);
 
         if (input.escape()) {
-            app.getGameState().reset();
             dispose();
             app.setScreen(new MainMenuScreen(app));
             return;
@@ -73,7 +72,7 @@ public class GameplayScreen extends BaseScreen {
         projectileSystem.update(player, delta, enemySystem.getAliveEnemies(), this::onProjectileHit, this::onEnemyDeath);
 
         if (gameOver) {
-            app.getGameState().reset();
+            app.resetGame();
             dispose();
             app.setScreen(new GameOverScreen(app));
             return;

@@ -81,10 +81,6 @@ public class EnemySystem {
         return nearest;
     }
 
-    public Array<EnemyEntity> getEnemies() {
-        return enemies;
-    }
-
     public Array<EnemyEntity> getAliveEnemies() {
         if (enemies == null) return null;
         Array<EnemyEntity> alive = new Array<>();

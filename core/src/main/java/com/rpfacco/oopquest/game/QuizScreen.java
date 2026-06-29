@@ -61,7 +61,7 @@ public class QuizScreen extends BaseScreen {
         }
         if (gameOver) {
             Gdx.app.log("QuizScreen", "gameOver, resetting state");
-            app.getGameState().reset();
+            app.resetGame();
             dispose();
             app.setScreen(new GameOverScreen(app));
             return;

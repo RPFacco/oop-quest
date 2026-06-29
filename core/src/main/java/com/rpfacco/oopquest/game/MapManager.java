@@ -58,10 +58,6 @@ public class MapManager {
         return mapRenderer;
     }
 
-    public String getCurrentMapId() {
-        return currentMapId;
-    }
-
     public Array<MoveEntity> getMoveEntities() {
         MapEntry entry = mapData.getMap(currentMapId);
         if (entry == null) return null;

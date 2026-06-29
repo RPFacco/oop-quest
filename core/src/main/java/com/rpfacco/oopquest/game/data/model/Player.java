@@ -31,7 +31,6 @@ public class Player {
     public void setY(float y) { this.y = y; }
     public float getWidth() { return width; }
     public float getHeight() { return height; }
-    public float getSpeed() { return speed; }
     public float getInvincibleTimer() { return invincibleTimer; }
     public void setInvincibleTimer(float invincibleTimer) { this.invincibleTimer = invincibleTimer; }
 
@@ -59,10 +58,6 @@ public class Player {
         float step = speed * delta;
         x += (dx / distance) * step;
         y += (dy / distance) * step;
-    }
-
-    public boolean isMoving() {
-        return moving;
     }
 
     public float getCenterX() {

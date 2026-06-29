@@ -12,9 +12,8 @@ public class MainMenuScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         if (Gdx.input.justTouched()) {
-            GameState gs = app.getGameState();
-            gs.reset();
-            Gdx.app.log("MainMenuScreen", "reset -> lives=" + gs.getLives() + " quizzes=" + gs.getCompletedCount());
+            app.resetGame();
+            Gdx.app.log("MainMenuScreen", "reset -> lives=" + app.getGameState().getLives() + " quizzes=" + app.getGameState().getCompletedCount());
             app.setScreen(new GameplayScreen(app));
             dispose();
             return;
