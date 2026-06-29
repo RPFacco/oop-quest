@@ -2,7 +2,8 @@ package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
-import com.rpfacco.oopquest.game.data.ProjectileEntity;
+import com.rpfacco.oopquest.game.data.model.EnemyEntity;
+import com.rpfacco.oopquest.game.data.model.ProjectileEntity;
 
 public class BurstPattern implements ShootPattern {
 

@@ -1,6 +1,7 @@
 package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.utils.JsonValue;
+import com.rpfacco.oopquest.game.data.model.EnemyEntity;
 
 public class WaypointMovement implements MovementStrategy {
 

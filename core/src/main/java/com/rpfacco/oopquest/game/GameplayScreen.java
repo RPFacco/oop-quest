@@ -15,15 +15,16 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.rpfacco.oopquest.game.data.MapData;
-import com.rpfacco.oopquest.game.data.MapEntry;
-import com.rpfacco.oopquest.game.data.MapLoader;
-import com.rpfacco.oopquest.game.data.MoveEntity;
-import com.rpfacco.oopquest.game.data.EnemyLoader;
-import com.rpfacco.oopquest.game.data.ProjectileEntity;
-import com.rpfacco.oopquest.game.data.NpcLoader;
-import com.rpfacco.oopquest.game.data.QuizData;
-import com.rpfacco.oopquest.game.data.QuizLoader;
+import com.rpfacco.oopquest.game.data.model.MapData;
+import com.rpfacco.oopquest.game.data.model.MapEntry;
+import com.rpfacco.oopquest.game.data.model.MoveEntity;
+import com.rpfacco.oopquest.game.data.model.EnemyEntity;
+import com.rpfacco.oopquest.game.data.model.ProjectileEntity;
+import com.rpfacco.oopquest.game.data.model.QuizData;
+import com.rpfacco.oopquest.game.data.loader.MapLoader;
+import com.rpfacco.oopquest.game.data.loader.EnemyLoader;
+import com.rpfacco.oopquest.game.data.loader.NpcLoader;
+import com.rpfacco.oopquest.game.data.loader.QuizLoader;
 import com.rpfacco.oopquest.game.OopQuest;
 
 public class GameplayScreen implements Screen {

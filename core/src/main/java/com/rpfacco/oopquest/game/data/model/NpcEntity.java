@@ -1,4 +1,4 @@
-package com.rpfacco.oopquest.game.data;
+package com.rpfacco.oopquest.game.data.model;
 
 public class NpcEntity {
 

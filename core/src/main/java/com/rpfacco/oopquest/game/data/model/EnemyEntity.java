@@ -1,4 +1,7 @@
-package com.rpfacco.oopquest.game;
+package com.rpfacco.oopquest.game.data.model;
+
+import com.rpfacco.oopquest.game.MovementStrategy;
+import com.rpfacco.oopquest.game.ShootPattern;
 
 public class EnemyEntity {
 

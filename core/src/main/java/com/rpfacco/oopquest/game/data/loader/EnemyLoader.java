@@ -1,4 +1,4 @@
-package com.rpfacco.oopquest.game.data;
+package com.rpfacco.oopquest.game.data.loader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.rpfacco.oopquest.game.BurstPattern;
-import com.rpfacco.oopquest.game.EnemyEntity;
+import com.rpfacco.oopquest.game.data.model.EnemyEntity;
 import com.rpfacco.oopquest.game.MovementStrategy;
 import com.rpfacco.oopquest.game.ShootPattern;
 import com.rpfacco.oopquest.game.WaypointMovement;

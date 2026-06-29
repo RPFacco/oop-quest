@@ -1,9 +1,10 @@
-package com.rpfacco.oopquest.game.data;
+package com.rpfacco.oopquest.game.data.loader;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.rpfacco.oopquest.game.data.model.QuizData;
 
 import java.util.HashMap;
 import java.util.Map;

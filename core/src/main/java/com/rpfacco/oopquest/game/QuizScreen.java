@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.rpfacco.oopquest.game.data.QuizData;
-import com.rpfacco.oopquest.game.data.QuizLoader;
+import com.rpfacco.oopquest.game.data.model.QuizData;
+import com.rpfacco.oopquest.game.data.loader.QuizLoader;
 import com.rpfacco.oopquest.game.OopQuest;
 
 public class QuizScreen implements Screen {

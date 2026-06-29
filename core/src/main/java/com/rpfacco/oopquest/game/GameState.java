@@ -1,6 +1,6 @@
 package com.rpfacco.oopquest.game;
 
-import com.rpfacco.oopquest.game.data.EnemyLoader;
+import com.rpfacco.oopquest.game.data.loader.EnemyLoader;
 import java.util.HashSet;
 import java.util.Set;
 
