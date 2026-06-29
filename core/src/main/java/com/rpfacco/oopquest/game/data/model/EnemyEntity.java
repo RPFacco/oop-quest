@@ -8,8 +8,8 @@ public class EnemyEntity {
     private float height;
     private float speed;
     private float bulletSpeed;
-    private int hp = 8;
-    private int maxHp = 8;
+    private int hp;
+    private int maxHp;
     private boolean alive = true;
     private String quizId;
     private MovementStrategy strategy;
@@ -37,7 +37,9 @@ public class EnemyEntity {
     public void setShootPattern(ShootPattern shootPattern) { this.shootPattern = shootPattern; }
 
     public int getHp() { return hp; }
+    public void setHp(int hp) { this.hp = hp; }
     public int getMaxHp() { return maxHp; }
+    public void setMaxHp(int maxHp) { this.maxHp = maxHp; }
     public boolean isAlive() { return alive; }
 
     public void takeDamage(int amount) {
