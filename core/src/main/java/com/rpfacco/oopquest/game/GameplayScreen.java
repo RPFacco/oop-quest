@@ -1,193 +1,99 @@
 package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.rpfacco.oopquest.game.data.model.MapData;
-import com.rpfacco.oopquest.game.data.model.MapEntry;
-import com.rpfacco.oopquest.game.data.model.MoveEntity;
 import com.rpfacco.oopquest.game.data.model.EnemyEntity;
+import com.rpfacco.oopquest.game.data.model.MoveEntity;
 import com.rpfacco.oopquest.game.data.model.ProjectileEntity;
 import com.rpfacco.oopquest.game.data.model.QuizData;
-import com.rpfacco.oopquest.game.data.loader.MapLoader;
-import com.rpfacco.oopquest.game.data.loader.EnemyLoader;
-import com.rpfacco.oopquest.game.data.loader.NpcLoader;
 import com.rpfacco.oopquest.game.data.loader.QuizLoader;
-import com.rpfacco.oopquest.game.OopQuest;
 
-public class GameplayScreen implements Screen {
+public class GameplayScreen extends BaseScreen {
 
-    private final OopQuest app;
-    private OrthographicCamera camera;
-    private Viewport viewport;
-    private TiledMap tiledMap;
-    private OrthogonalTiledMapRenderer mapRenderer;
+    private MapManager mapManager;
+    private WorldRenderer worldRenderer;
+    private InputController inputController;
     private Player player;
-    private ShapeRenderer shapeRenderer;
-    private MapData mapData;
-    private String currentMapId;
-    private Rectangle playerRect;
-    private Rectangle entityRect;
     private NpcSystem npcSystem;
     private EnemySystem enemySystem;
     private ProjectileSystem projectileSystem;
-    private SpriteBatch batch;
-    private BitmapFont font;
     private InputHandler inputHandler;
-    private HudRenderer hudRenderer;
-    private float homingCooldown;
+    private Rectangle playerRect;
+    private Rectangle entityRect;
     private boolean initialized;
     private boolean leaving;
     private boolean gameOver;
 
     public GameplayScreen(OopQuest app) {
-        this.app = app;
+        super(app);
     }
 
     @Override
     public void show() {
         if (initialized) return;
         initialized = true;
-
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, camera);
-        camera.position.set(GameConfig.MAP_WIDTH / 2f, GameConfig.MAP_HEIGHT / 2f, 0);
-        camera.update();
+        super.show();
+        font.getData().setScale(2);
 
         npcSystem = new NpcSystem();
         enemySystem = new EnemySystem();
         projectileSystem = new ProjectileSystem();
 
-        mapData = MapLoader.load();
-        currentMapId = mapData.getStartMap();
-        loadMap(currentMapId);
+        mapManager = new MapManager(npcSystem, enemySystem, projectileSystem);
+        mapManager.loadMap(mapManager.getStartMap());
 
         float playerX = GameConfig.MAP_WIDTH / 2f - 12;
         float playerY = GameConfig.MAP_HEIGHT / 2f - 12;
         player = new Player(playerX, playerY);
 
-        shapeRenderer = new ShapeRenderer();
         playerRect = new Rectangle();
         entityRect = new Rectangle();
-        batch = new SpriteBatch();
-        font = new BitmapFont();
-        font.getData().setScale(2);
-
+        worldRenderer = new WorldRenderer();
         inputHandler = new InputHandler(viewport);
-        hudRenderer = new HudRenderer(batch, font);
-        homingCooldown = 0f;
+        inputController = new InputController(inputHandler, player, enemySystem, projectileSystem);
     }
 
     @Override
     public void render(float delta) {
-        handleInput();
-        if (leaving) {
+        InputResult input = inputController.handleInput(delta);
+
+        if (input.escape()) {
             app.getGameState().reset();
             dispose();
             app.setScreen(new MainMenuScreen(app));
             return;
         }
 
-        homingCooldown = Math.max(0, homingCooldown - delta);
         player.update(delta);
         enemySystem.update(delta);
         enemySystem.updateShooting(player, delta, projectileSystem);
         projectileSystem.update(player, delta, enemySystem.getAliveEnemies(), this::onProjectileHit, this::onEnemyDeath);
+
         if (gameOver) {
             app.getGameState().reset();
             dispose();
             app.setScreen(new GameOverScreen(app));
             return;
         }
+
         checkMoveEntityOverlap();
         playerRect.set(player.getX(), player.getY(), player.getWidth(), player.getHeight());
         npcSystem.checkProximity(playerRect, app.getGameState(), this::onNpcTrigger);
-        clampPlayerToBounds();
+        player.clampToBounds();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
-        mapRenderer.setView(camera);
-        mapRenderer.render();
-
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        hudRenderer.render(app.getGameState());
-        batch.end();
-
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-        Array<MoveEntity> entities = mapData.getMap(currentMapId).getMoveEntities();
-        if (entities != null) {
-            shapeRenderer.setColor(1, 215f / 255, 0, 1);
-            for (MoveEntity me : entities) {
-                shapeRenderer.rect(me.getX(), me.getY(), me.getWidth(), me.getHeight());
-            }
-        }
-
-        npcSystem.render(shapeRenderer, app.getGameState());
-        enemySystem.render(shapeRenderer);
-        enemySystem.renderHealthBars(shapeRenderer);
-        projectileSystem.render(shapeRenderer);
-
-        if (!(player.getInvincibleTimer() > 0 && (int)(player.getInvincibleTimer() * 10) % 2 == 0)) {
-            shapeRenderer.setColor(0.6f, 0.2f, 0.8f, 1);
-            shapeRenderer.rect(player.getX(), player.getY(), player.getWidth(), player.getHeight());
-        }
-        shapeRenderer.end();
-    }
-
-    private void handleInput() {
-        if (inputHandler.isEscPressed()) {
-            leaving = true;
-            return;
-        }
-
-        if (inputHandler.isEPressed() && homingCooldown <= 0) {
-            EnemyEntity target = enemySystem.findNearest(player);
-            if (target != null) {
-                ProjectileEntity p = new ProjectileEntity();
-                p.setX(player.getCenterX());
-                p.setY(player.getCenterY());
-                float dx = target.getCenterX() - player.getCenterX();
-                float dy = target.getCenterY() - player.getCenterY();
-                float dist = (float) Math.sqrt(dx * dx + dy * dy);
-                if (dist == 0) dist = 1f;
-                p.setVx(-dy / dist);
-                p.setVy(dx / dist);
-                p.setSpeed(1800f);
-                p.setSize(8);
-                p.setAlive(true);
-                projectileSystem.add(p, new HomingBehavior(target, 1800f, dist));
-                homingCooldown = 0.5f;
-            }
-        }
-
-        Vector3 touchPos = inputHandler.handleTouch();
-        if (touchPos != null) {
-            if (touchPos.x >= 0 && touchPos.x <= GameConfig.MAP_WIDTH
-                    && touchPos.y >= 0 && touchPos.y <= GameConfig.MAP_HEIGHT) {
-                player.setTarget(touchPos.x, touchPos.y);
-            }
-        }
+        worldRenderer.renderMap(camera, mapManager);
+        worldRenderer.renderHud(batch, camera, font, app.getGameState());
+        worldRenderer.renderEntities(camera, mapManager, player, app.getGameState(), npcSystem, enemySystem, projectileSystem);
     }
 
     private void checkMoveEntityOverlap() {
-        Array<MoveEntity> entities = mapData.getMap(currentMapId).getMoveEntities();
+        Array<MoveEntity> entities = mapManager.getMoveEntities();
         if (entities == null) return;
 
         playerRect.set(player.getX(), player.getY(), player.getWidth(), player.getHeight());
@@ -195,31 +101,10 @@ public class GameplayScreen implements Screen {
         for (MoveEntity me : entities) {
             entityRect.set(me.getX(), me.getY(), me.getWidth(), me.getHeight());
             if (playerRect.overlaps(entityRect)) {
-                transitionTo(me);
+                mapManager.transitionTo(me, player);
                 return;
             }
         }
-    }
-
-    private void transitionTo(MoveEntity me) {
-        loadMap(me.getTargetMap());
-        player.setX(me.getSpawnX());
-        player.setY(me.getSpawnY());
-        player.setTarget(player.getX(), player.getY());
-    }
-
-    private void loadMap(String mapId) {
-        if (tiledMap != null) tiledMap.dispose();
-        if (mapRenderer != null) mapRenderer.dispose();
-
-        MapEntry mapEntry = mapData.getMap(mapId);
-        tiledMap = new TmxMapLoader().load(mapEntry.getFile());
-        mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        currentMapId = mapId;
-
-        npcSystem.setNpcs(NpcLoader.load().get(mapId));
-        enemySystem.setEnemies(EnemyLoader.load().get(mapId));
-        projectileSystem.clear();
     }
 
     private void onNpcTrigger(String quizId, QuizData quiz) {
@@ -244,29 +129,14 @@ public class GameplayScreen implements Screen {
         }
     }
 
-    private void clampPlayerToBounds() {
-        if (player.getX() < 0) player.setX(0);
-        if (player.getY() < 0) player.setY(0);
-        if (player.getX() + player.getWidth() > GameConfig.MAP_WIDTH) player.setX(GameConfig.MAP_WIDTH - player.getWidth());
-        if (player.getY() + player.getHeight() > GameConfig.MAP_HEIGHT) player.setY(GameConfig.MAP_HEIGHT - player.getHeight());
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        if (width <= 0 || height <= 0) return;
-        viewport.update(width, height);
-    }
-
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
 
     @Override
     public void dispose() {
-        if (tiledMap != null) tiledMap.dispose();
-        if (mapRenderer != null) mapRenderer.dispose();
-        if (shapeRenderer != null) shapeRenderer.dispose();
-        if (batch != null) batch.dispose();
-        if (font != null) font.dispose();
+        mapManager.dispose();
+        worldRenderer.dispose();
+        super.dispose();
     }
 }

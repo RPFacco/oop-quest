@@ -70,4 +70,11 @@ public class Player {
     public float getCenterY() {
         return y + height / 2f;
     }
+
+    public void clampToBounds() {
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+        if (x + width > GameConfig.MAP_WIDTH) x = GameConfig.MAP_WIDTH - width;
+        if (y + height > GameConfig.MAP_HEIGHT) y = GameConfig.MAP_HEIGHT - height;
+    }
 }
