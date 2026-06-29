@@ -42,7 +42,6 @@ public class EnemyLoader {
                 enemy.setHeight(enemyVal.getFloat("height"));
                 enemy.setSpeed(enemyVal.getFloat("speed"));
                 enemy.setBulletSpeed(enemyVal.has("bulletSpeed") ? enemyVal.getFloat("bulletSpeed") : enemy.getSpeed());
-                enemy.setMoving(true);
 
                 JsonValue movement = enemyVal.get("movement");
                 if (movement != null) {

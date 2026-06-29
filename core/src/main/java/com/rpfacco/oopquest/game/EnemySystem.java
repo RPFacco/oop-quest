@@ -16,7 +16,7 @@ public class EnemySystem {
         if (enemies == null) return;
 
         for (EnemyEntity enemy : enemies) {
-            if (!enemy.isMoving() || enemy.getStrategy() == null) continue;
+            if (enemy.getStrategy() == null) continue;
             enemy.getStrategy().update(enemy, delta);
         }
     }

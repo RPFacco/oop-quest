@@ -13,5 +13,6 @@ public class MapData {
 
     public String getStartMap() { return startMap; }
     public void setStartMap(String startMap) { this.startMap = startMap; }
-    public ObjectMap<String, MapEntry> getMaps() { return maps; }
+    public MapEntry getMap(String id) { return maps.get(id); }
+    ObjectMap<String, MapEntry> getMaps() { return maps; }
 }

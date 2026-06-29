@@ -76,6 +76,13 @@ public class QuizScreen implements Screen {
             dispose();
             return;
         }
+        if (gameOver) {
+            Gdx.app.log("QuizScreen", "gameOver, resetting state");
+            jogoGame.getGameState().reset();
+            dispose();
+            jogoGame.setScreen(new MainMenuScreen(jogoGame));
+            return;
+        }
 
         Gdx.gl.glClearColor(0.05f, 0.05f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -108,15 +115,6 @@ public class QuizScreen implements Screen {
             shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
         }
         shapeRenderer.end();
-
-        if (gameOver) {
-            GameState gs = jogoGame.getGameState();
-            Gdx.app.log("QuizScreen", "gameOver, resetting state");
-            gs.reset();
-            Gdx.app.log("QuizScreen", "after reset -> lives=" + gs.getLives() + " quizzes=" + gs.getCompletedCount());
-            dispose();
-            jogoGame.setScreen(new MainMenuScreen(jogoGame));
-        }
     }
 
     private void handleInput() {

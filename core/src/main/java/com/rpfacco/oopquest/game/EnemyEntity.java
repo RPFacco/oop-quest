@@ -8,7 +8,6 @@ public class EnemyEntity {
     private float height;
     private float speed;
     private float bulletSpeed;
-    private boolean moving;
     private MovementStrategy strategy;
     private ShootPattern shootPattern;
 
@@ -26,8 +25,6 @@ public class EnemyEntity {
     public void setSpeed(float speed) { this.speed = speed; }
     public float getBulletSpeed() { return bulletSpeed; }
     public void setBulletSpeed(float bulletSpeed) { this.bulletSpeed = bulletSpeed; }
-    public boolean isMoving() { return moving; }
-    public void setMoving(boolean moving) { this.moving = moving; }
     public MovementStrategy getStrategy() { return strategy; }
     public void setStrategy(MovementStrategy strategy) { this.strategy = strategy; }
     public ShootPattern getShootPattern() { return shootPattern; }

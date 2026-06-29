@@ -126,7 +126,7 @@ public class GameplayScreen implements Screen {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        Array<MoveEntity> entities = mapData.getMaps().get(currentMapId).getMoveEntities();
+        Array<MoveEntity> entities = mapData.getMap(currentMapId).getMoveEntities();
         if (entities != null) {
             shapeRenderer.setColor(1, 215f / 255, 0, 1);
             for (MoveEntity me : entities) {
@@ -161,7 +161,7 @@ public class GameplayScreen implements Screen {
     }
 
     private void checkMoveEntityOverlap() {
-        Array<MoveEntity> entities = mapData.getMaps().get(currentMapId).getMoveEntities();
+        Array<MoveEntity> entities = mapData.getMap(currentMapId).getMoveEntities();
         if (entities == null) return;
 
         playerRect.set(player.getX(), player.getY(), player.getWidth(), player.getHeight());
@@ -186,7 +186,7 @@ public class GameplayScreen implements Screen {
         if (tiledMap != null) tiledMap.dispose();
         if (mapRenderer != null) mapRenderer.dispose();
 
-        MapEntry mapEntry = mapData.getMaps().get(mapId);
+        MapEntry mapEntry = mapData.getMap(mapId);
         tiledMap = new TmxMapLoader().load(mapEntry.getFile());
         mapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         currentMapId = mapId;

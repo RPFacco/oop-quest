@@ -18,7 +18,7 @@ public class InputHandler {
         if (!Gdx.input.justTouched()) return null;
         touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(touchPos);
-        return touchPos;
+        return touchPos.cpy();
     }
 
     public boolean isEscPressed() {
