@@ -23,6 +23,7 @@ import com.rpfacco.oopquest.game.data.EnemyLoader;
 import com.rpfacco.oopquest.game.data.ProjectileEntity;
 import com.rpfacco.oopquest.game.data.NpcLoader;
 import com.rpfacco.oopquest.game.data.QuizData;
+import com.rpfacco.oopquest.game.data.QuizLoader;
 import com.rpfacco.oopquest.game.OopQuest;
 
 public class GameplayScreen implements Screen {
@@ -102,7 +103,7 @@ public class GameplayScreen implements Screen {
         player.update(delta);
         enemySystem.update(delta);
         enemySystem.updateShooting(player, delta, projectileSystem);
-        projectileSystem.update(player, delta, enemySystem.getAliveEnemies(), this::onProjectileHit);
+        projectileSystem.update(player, delta, enemySystem.getAliveEnemies(), this::onProjectileHit, this::onEnemyDeath);
         if (gameOver) {
             jogoGame.getGameState().reset();
             dispose();
@@ -223,6 +224,14 @@ public class GameplayScreen implements Screen {
     private void onNpcTrigger(String quizId, QuizData quiz) {
         player.setTarget(player.getX(), player.getY());
         jogoGame.setScreen(new QuizScreen(jogoGame, this, quizId, quiz));
+    }
+
+    private void onEnemyDeath(EnemyEntity e) {
+        if (jogoGame.getGameState().isCompleted("3")) return;
+        QuizData quiz = QuizLoader.load().get("3");
+        if (quiz != null) {
+            jogoGame.setScreen(new QuizScreen(jogoGame, this, "3", quiz));
+        }
     }
 
     private void onProjectileHit(ProjectileEntity p) {

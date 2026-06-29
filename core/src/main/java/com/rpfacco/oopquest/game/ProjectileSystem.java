@@ -24,7 +24,7 @@ public class ProjectileSystem {
         this.entries = new Array<>();
     }
 
-    public void update(Player player, float delta, Array<EnemyEntity> enemies, Consumer<ProjectileEntity> onHit) {
+    public void update(Player player, float delta, Array<EnemyEntity> enemies, Consumer<ProjectileEntity> onHit, Consumer<EnemyEntity> onEnemyDeath) {
         for (int i = entries.size - 1; i >= 0; i--) {
             ProjectileEntry entry = entries.get(i);
             ProjectileEntity p = entry.entity;
@@ -59,6 +59,9 @@ public class ProjectileSystem {
                     float dy = cy - closestY;
                     if (dx * dx + dy * dy <= r * r) {
                         e.takeDamage(1);
+                        if (!e.isAlive() && onEnemyDeath != null) {
+                            onEnemyDeath.accept(e);
+                        }
                         p.setAlive(false);
                         entries.removeIndex(i);
                         break;

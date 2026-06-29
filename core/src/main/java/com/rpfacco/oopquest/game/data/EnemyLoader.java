@@ -18,6 +18,10 @@ public class EnemyLoader {
 
     private static Map<String, Array<EnemyEntity>> cache;
 
+    public static void clearCache() {
+        cache = null;
+    }
+
     public static Map<String, Array<EnemyEntity>> load() {
         if (cache != null) return cache;
 

@@ -18,5 +18,15 @@
       "Defines a new method"
     ],
     "correct": 1
+  },
+  "3": {
+    "question": "What is polymorphism in OOP?",
+    "choices": [
+      "The ability of an object to take many forms",
+      "Hiding internal data from external access",
+      "Creating a new class from an existing class",
+      "Grouping related variables and methods"
+    ],
+    "correct": 0
   }
 }
