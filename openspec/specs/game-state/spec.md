@@ -1,11 +1,11 @@
 ## ADDED Requirements
 
-### Requirement: Game starts with 5 lives
-The system SHALL initialize the player with 5 lives when a new game begins.
+### Requirement: Game starts with configurable lives
+The system SHALL initialize the player with `GameConfig.LIVES` lives when a new game begins.
 
 #### Scenario: New game
 - **WHEN** the game starts from the main menu
-- **THEN** the player SHALL have 5 lives
+- **THEN** the player SHALL have `GameConfig.LIVES` lives
 
 #### Scenario: Player loses a life
 - **WHEN** the player answers a quiz question incorrectly
@@ -35,7 +35,7 @@ When lives reach zero, the game SHALL transition to a game over state.
 - **WHEN** lives reach 0
 - **THEN** the game SHALL display a Game Over message
 - **THEN** the player SHALL be returned to the main menu
-- **THEN** game state SHALL be reset (lives to 5, completed quizzes cleared)
+- **THEN** game state SHALL be reset (lives to `GameConfig.LIVES`, completed quizzes cleared)
 
 ### Requirement: Lives are visible during gameplay
 The system SHALL display the current life count on the gameplay screen at all times.
@@ -50,7 +50,7 @@ When the player returns to the main menu and starts a new game, game state SHALL
 
 #### Scenario: Player starts new game after game over
 - **WHEN** the player clicks to start a new game
-- **THEN** lives SHALL be reset to 5
+- **THEN** lives SHALL be reset to `GameConfig.LIVES`
 - **THEN** completed quizzes SHALL be cleared
 
 ### Requirement: Game state is held at the Game level

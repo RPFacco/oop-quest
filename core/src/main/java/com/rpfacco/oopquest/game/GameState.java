@@ -9,7 +9,7 @@ public class GameState {
     private Set<String> completedQuizzes;
 
     public GameState() {
-        this.lives = 5;
+        this.lives = GameConfig.LIVES;
         this.completedQuizzes = new HashSet<>();
     }
 
@@ -34,7 +34,7 @@ public class GameState {
     }
 
     public void reset() {
-        this.lives = 5;
+        this.lives = GameConfig.LIVES;
         this.completedQuizzes.clear();
     }
 }

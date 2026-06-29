@@ -14,6 +14,10 @@ public class MapLoader {
         if (cache != null) return cache;
 
         FileHandle file = Gdx.files.internal("data/maps.json");
+        if (!file.exists()) {
+            return new MapData();
+        }
+
         JsonReader reader = new JsonReader();
         JsonValue root = reader.parse(file);
 

@@ -45,7 +45,7 @@ public class WaypointMovement implements MovementStrategy {
             wpx[i] = waypoints.get(i).getFloat("x");
             wpy[i] = waypoints.get(i).getFloat("y");
         }
-        int start = Math.min(1, Math.max(0, wpx.length - 1));
+        int start = 0;
         return new WaypointMovement(wpx, wpy, start);
     }
 }
