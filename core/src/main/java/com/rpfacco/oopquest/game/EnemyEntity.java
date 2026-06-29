@@ -8,6 +8,9 @@ public class EnemyEntity {
     private float height;
     private float speed;
     private float bulletSpeed;
+    private int hp = 8;
+    private int maxHp = 8;
+    private boolean alive = true;
     private MovementStrategy strategy;
     private ShootPattern shootPattern;
 
@@ -29,6 +32,18 @@ public class EnemyEntity {
     public void setStrategy(MovementStrategy strategy) { this.strategy = strategy; }
     public ShootPattern getShootPattern() { return shootPattern; }
     public void setShootPattern(ShootPattern shootPattern) { this.shootPattern = shootPattern; }
+
+    public int getHp() { return hp; }
+    public int getMaxHp() { return maxHp; }
+    public boolean isAlive() { return alive; }
+
+    public void takeDamage(int amount) {
+        hp -= amount;
+        if (hp <= 0) {
+            hp = 0;
+            alive = false;
+        }
+    }
 
     public float getCenterX() {
         return x + width / 2f;

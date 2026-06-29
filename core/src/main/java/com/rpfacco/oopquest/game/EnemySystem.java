@@ -16,6 +16,7 @@ public class EnemySystem {
         if (enemies == null) return;
 
         for (EnemyEntity enemy : enemies) {
+            if (!enemy.isAlive()) continue;
             if (enemy.getStrategy() == null) continue;
             enemy.getStrategy().update(enemy, delta);
         }
@@ -25,6 +26,7 @@ public class EnemySystem {
         if (enemies == null) return;
 
         for (EnemyEntity enemy : enemies) {
+            if (!enemy.isAlive()) continue;
             if (enemy.getShootPattern() == null) continue;
             Array<ProjectileEntity> projs = enemy.getShootPattern().generate(enemy, player, delta);
             for (ProjectileEntity p : projs) {
@@ -36,9 +38,27 @@ public class EnemySystem {
     public void render(ShapeRenderer shapeRenderer) {
         if (enemies == null) return;
 
-        shapeRenderer.setColor(1, 0, 0, 1);
         for (EnemyEntity enemy : enemies) {
+            if (enemy.isAlive()) {
+                shapeRenderer.setColor(1, 0, 0, 1);
+            } else {
+                shapeRenderer.setColor(0.5f, 0.5f, 0.5f, 1);
+            }
             shapeRenderer.rect(enemy.getX(), enemy.getY(), enemy.getWidth(), enemy.getHeight());
+        }
+    }
+
+    public void renderHealthBars(ShapeRenderer shapeRenderer) {
+        if (enemies == null) return;
+
+        for (EnemyEntity enemy : enemies) {
+            if (!enemy.isAlive()) continue;
+            float ratio = enemy.getHp() / (float) enemy.getMaxHp();
+            float barWidth = enemy.getWidth() * ratio;
+            float barX = enemy.getCenterX() - barWidth / 2f;
+            float barY = enemy.getY() - 8f;
+            shapeRenderer.setColor(0, 1, 0, 1);
+            shapeRenderer.rect(barX, barY, barWidth, 8);
         }
     }
 
@@ -47,6 +67,7 @@ public class EnemySystem {
         EnemyEntity nearest = null;
         float minDist = Float.MAX_VALUE;
         for (EnemyEntity enemy : enemies) {
+            if (!enemy.isAlive()) continue;
             float dx = enemy.getCenterX() - player.getCenterX();
             float dy = enemy.getCenterY() - player.getCenterY();
             float dist = dx * dx + dy * dy;
@@ -60,5 +81,16 @@ public class EnemySystem {
 
     public Array<EnemyEntity> getEnemies() {
         return enemies;
+    }
+
+    public Array<EnemyEntity> getAliveEnemies() {
+        if (enemies == null) return null;
+        Array<EnemyEntity> alive = new Array<>();
+        for (EnemyEntity enemy : enemies) {
+            if (enemy.isAlive()) {
+                alive.add(enemy);
+            }
+        }
+        return alive;
     }
 }

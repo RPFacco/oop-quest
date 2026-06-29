@@ -48,9 +48,21 @@ public class ProjectileSystem {
             }
 
             if (entry.behavior != null) {
-                if (circleEnemyCollision(p, enemies)) {
-                    p.setAlive(false);
-                    entries.removeIndex(i);
+                float cx = p.getX();
+                float cy = p.getY();
+                float r = p.getSize() / 2f;
+                for (int j = enemies.size - 1; j >= 0; j--) {
+                    EnemyEntity e = enemies.get(j);
+                    float closestX = Math.max(e.getX(), Math.min(cx, e.getX() + e.getWidth()));
+                    float closestY = Math.max(e.getY(), Math.min(cy, e.getY() + e.getHeight()));
+                    float dx = cx - closestX;
+                    float dy = cy - closestY;
+                    if (dx * dx + dy * dy <= r * r) {
+                        e.takeDamage(1);
+                        p.setAlive(false);
+                        entries.removeIndex(i);
+                        break;
+                    }
                 }
             } else if (circleRectCollision(p, player)) {
                 onHit.accept(p);
@@ -71,21 +83,6 @@ public class ProjectileSystem {
         float dx = cx - closestX;
         float dy = cy - closestY;
         return dx * dx + dy * dy <= r * r;
-    }
-
-    private boolean circleEnemyCollision(ProjectileEntity p, Array<EnemyEntity> enemies) {
-        float cx = p.getX();
-        float cy = p.getY();
-        float r = p.getSize() / 2f;
-
-        for (EnemyEntity enemy : enemies) {
-            float closestX = Math.max(enemy.getX(), Math.min(cx, enemy.getX() + enemy.getWidth()));
-            float closestY = Math.max(enemy.getY(), Math.min(cy, enemy.getY() + enemy.getHeight()));
-            float dx = cx - closestX;
-            float dy = cy - closestY;
-            if (dx * dx + dy * dy <= r * r) return true;
-        }
-        return false;
     }
 
     public void render(ShapeRenderer shapeRenderer) {

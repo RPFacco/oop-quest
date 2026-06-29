@@ -102,7 +102,7 @@ public class GameplayScreen implements Screen {
         player.update(delta);
         enemySystem.update(delta);
         enemySystem.updateShooting(player, delta, projectileSystem);
-        projectileSystem.update(player, delta, enemySystem.getEnemies(), this::onProjectileHit);
+        projectileSystem.update(player, delta, enemySystem.getAliveEnemies(), this::onProjectileHit);
         if (gameOver) {
             jogoGame.getGameState().reset();
             dispose();
@@ -139,6 +139,7 @@ public class GameplayScreen implements Screen {
 
         npcSystem.render(shapeRenderer, jogoGame.getGameState());
         enemySystem.render(shapeRenderer);
+        enemySystem.renderHealthBars(shapeRenderer);
         projectileSystem.render(shapeRenderer);
 
         if (!(player.getInvincibleTimer() > 0 && (int)(player.getInvincibleTimer() * 10) % 2 == 0)) {
