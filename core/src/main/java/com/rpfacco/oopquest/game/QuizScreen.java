@@ -80,7 +80,7 @@ public class QuizScreen implements Screen {
             Gdx.app.log("QuizScreen", "gameOver, resetting state");
             jogoGame.getGameState().reset();
             dispose();
-            jogoGame.setScreen(new MainMenuScreen(jogoGame));
+            jogoGame.setScreen(new GameOverScreen(jogoGame));
             return;
         }
 
@@ -133,7 +133,7 @@ public class QuizScreen implements Screen {
                     if (gameState.getCompletedCount() >= QuizLoader.load().size()) {
                         Gdx.app.log("QuizScreen", "all quizzes completed, resetting");
                         gameState.reset();
-                        jogoGame.setScreen(new MainMenuScreen(jogoGame));
+                        jogoGame.setScreen(new VictoryScreen(jogoGame));
                     } else {
                         jogoGame.setScreen(gameplayScreen);
                     }

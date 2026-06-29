@@ -107,7 +107,7 @@ public class GameplayScreen implements Screen {
         if (gameOver) {
             jogoGame.getGameState().reset();
             dispose();
-            jogoGame.setScreen(new MainMenuScreen(jogoGame));
+            jogoGame.setScreen(new GameOverScreen(jogoGame));
             return;
         }
         checkMoveEntityOverlap();
