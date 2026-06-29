@@ -1,38 +1,16 @@
 package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class VictoryScreen implements Screen {
+public class VictoryScreen extends BaseScreen {
 
-    private final OopQuest app;
-    private OrthographicCamera camera;
-    private Viewport viewport;
-    private SpriteBatch batch;
-    private BitmapFont font;
-    private GlyphLayout glyphLayout;
+    private final GlyphLayout glyphLayout;
 
     public VictoryScreen(OopQuest app) {
-        this.app = app;
-    }
-
-    @Override
-    public void show() {
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, camera);
-        camera.position.set(GameConfig.MAP_WIDTH / 2f, GameConfig.MAP_HEIGHT / 2f, 0);
-        camera.update();
-
-        batch = new SpriteBatch();
-        font = new BitmapFont();
-        glyphLayout = new GlyphLayout();
+        super(app);
+        this.glyphLayout = new GlyphLayout();
     }
 
     @Override
@@ -69,21 +47,5 @@ public class VictoryScreen implements Screen {
         font.draw(batch, "Click to continue", clickX, clickY);
 
         batch.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        if (width <= 0 || height <= 0) return;
-        viewport.update(width, height);
-    }
-
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-        font.dispose();
     }
 }
