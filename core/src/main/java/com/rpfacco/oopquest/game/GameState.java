@@ -1,6 +1,5 @@
 package com.rpfacco.oopquest.game;
 
-import com.rpfacco.oopquest.game.data.loader.EnemyLoader;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,6 +36,5 @@ public class GameState {
     public void reset() {
         this.lives = GameConfig.LIVES;
         this.completedQuizzes.clear();
-        EnemyLoader.clearCache();
     }
 }

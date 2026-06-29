@@ -5,11 +5,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.rpfacco.oopquest.game.BurstPattern;
+import com.rpfacco.oopquest.game.StrategyFactory;
 import com.rpfacco.oopquest.game.data.model.EnemyEntity;
-import com.rpfacco.oopquest.game.MovementStrategy;
-import com.rpfacco.oopquest.game.ShootPattern;
-import com.rpfacco.oopquest.game.WaypointMovement;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,31 +43,18 @@ public class EnemyLoader {
                 enemy.setHeight(enemyVal.getFloat("height"));
                 enemy.setSpeed(enemyVal.getFloat("speed"));
                 enemy.setBulletSpeed(enemyVal.has("bulletSpeed") ? enemyVal.getFloat("bulletSpeed") : enemy.getSpeed());
+                enemy.setQuizId(enemyVal.has("quizId") ? enemyVal.getString("quizId") : null);
 
                 JsonValue movement = enemyVal.get("movement");
                 if (movement != null) {
                     String type = movement.getString("type");
-                    switch (type) {
-                        case "waypoint":
-                            enemy.setStrategy(WaypointMovement.fromJson(movement));
-                            break;
-                        default:
-                            Gdx.app.error("EnemyLoader", "Unknown movement type: " + type);
-                            break;
-                    }
+                    enemy.setStrategy(StrategyFactory.createMovement(type, movement));
                 }
 
                 JsonValue shoot = enemyVal.get("shoot");
                 if (shoot != null) {
                     String type = shoot.getString("type");
-                    switch (type) {
-                        case "burst":
-                            enemy.setShootPattern(BurstPattern.fromJson(shoot));
-                            break;
-                        default:
-                            Gdx.app.error("EnemyLoader", "Unknown shoot type: " + type);
-                            break;
-                    }
+                    enemy.setShootPattern(StrategyFactory.createShootPattern(type, shoot));
                 }
 
                 enemies.add(enemy);

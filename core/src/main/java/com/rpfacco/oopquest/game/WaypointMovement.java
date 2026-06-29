@@ -2,6 +2,7 @@ package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.utils.JsonValue;
 import com.rpfacco.oopquest.game.data.model.EnemyEntity;
+import com.rpfacco.oopquest.game.data.model.MovementStrategy;
 
 public class WaypointMovement implements MovementStrategy {
 
@@ -46,7 +47,7 @@ public class WaypointMovement implements MovementStrategy {
             wpx[i] = waypoints.get(i).getFloat("x");
             wpy[i] = waypoints.get(i).getFloat("y");
         }
-        int start = 0;
+        int start = config.has("startWaypoint") ? config.getInt("startWaypoint") : 0;
         return new WaypointMovement(wpx, wpy, start);
     }
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.rpfacco.oopquest.game.data.model.MoveEntity;
+import com.rpfacco.oopquest.game.data.model.Player;
 
 public class WorldRenderer {
 

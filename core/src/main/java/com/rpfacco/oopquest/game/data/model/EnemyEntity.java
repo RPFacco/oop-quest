@@ -1,8 +1,5 @@
 package com.rpfacco.oopquest.game.data.model;
 
-import com.rpfacco.oopquest.game.MovementStrategy;
-import com.rpfacco.oopquest.game.ShootPattern;
-
 public class EnemyEntity {
 
     private float x;
@@ -14,6 +11,7 @@ public class EnemyEntity {
     private int hp = 8;
     private int maxHp = 8;
     private boolean alive = true;
+    private String quizId;
     private MovementStrategy strategy;
     private ShootPattern shootPattern;
 
@@ -31,6 +29,8 @@ public class EnemyEntity {
     public void setSpeed(float speed) { this.speed = speed; }
     public float getBulletSpeed() { return bulletSpeed; }
     public void setBulletSpeed(float bulletSpeed) { this.bulletSpeed = bulletSpeed; }
+    public String getQuizId() { return quizId; }
+    public void setQuizId(String quizId) { this.quizId = quizId; }
     public MovementStrategy getStrategy() { return strategy; }
     public void setStrategy(MovementStrategy strategy) { this.strategy = strategy; }
     public ShootPattern getShootPattern() { return shootPattern; }

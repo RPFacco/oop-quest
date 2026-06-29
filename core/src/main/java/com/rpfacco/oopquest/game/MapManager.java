@@ -10,6 +10,7 @@ import com.rpfacco.oopquest.game.data.model.MoveEntity;
 import com.rpfacco.oopquest.game.data.loader.MapLoader;
 import com.rpfacco.oopquest.game.data.loader.EnemyLoader;
 import com.rpfacco.oopquest.game.data.loader.NpcLoader;
+import com.rpfacco.oopquest.game.data.model.Player;
 
 public class MapManager {
 

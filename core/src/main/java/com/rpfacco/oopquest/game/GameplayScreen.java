@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.rpfacco.oopquest.game.data.model.EnemyEntity;
 import com.rpfacco.oopquest.game.data.model.MoveEntity;
+import com.rpfacco.oopquest.game.data.model.Player;
 import com.rpfacco.oopquest.game.data.model.ProjectileEntity;
 import com.rpfacco.oopquest.game.data.model.QuizData;
 import com.rpfacco.oopquest.game.data.loader.QuizLoader;
@@ -113,10 +114,12 @@ public class GameplayScreen extends BaseScreen {
     }
 
     private void onEnemyDeath(EnemyEntity e) {
-        if (app.getGameState().isCompleted("3")) return;
-        QuizData quiz = QuizLoader.load().get("3");
+        String quizId = e.getQuizId();
+        if (quizId == null) return;
+        if (app.getGameState().isCompleted(quizId)) return;
+        QuizData quiz = QuizLoader.load().get(quizId);
         if (quiz != null) {
-            app.setScreen(new QuizScreen(app, this, "3", quiz));
+            app.setScreen(new QuizScreen(app, this, quizId, quiz));
         }
     }
 

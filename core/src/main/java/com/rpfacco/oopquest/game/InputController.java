@@ -2,6 +2,7 @@ package com.rpfacco.oopquest.game;
 
 import com.badlogic.gdx.math.Vector3;
 import com.rpfacco.oopquest.game.data.model.EnemyEntity;
+import com.rpfacco.oopquest.game.data.model.Player;
 import com.rpfacco.oopquest.game.data.model.ProjectileEntity;
 
 public class InputController {

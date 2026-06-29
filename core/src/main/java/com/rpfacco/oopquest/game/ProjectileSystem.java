@@ -3,6 +3,7 @@ package com.rpfacco.oopquest.game;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.rpfacco.oopquest.game.data.model.EnemyEntity;
+import com.rpfacco.oopquest.game.data.model.Player;
 import com.rpfacco.oopquest.game.data.model.ProjectileEntity;
 
 import java.util.function.Consumer;
@@ -41,42 +42,51 @@ public class ProjectileSystem {
             p.setX(p.getX() + p.getVx() * p.getSpeed() * delta);
             p.setY(p.getY() + p.getVy() * p.getSpeed() * delta);
 
-            if (p.getX() < -p.getSize() || p.getX() > GameConfig.MAP_WIDTH + p.getSize()
-                    || p.getY() < -p.getSize() || p.getY() > GameConfig.MAP_HEIGHT + p.getSize()) {
+            if (checkBounds(p)) {
                 p.setAlive(false);
                 entries.removeIndex(i);
                 continue;
             }
 
             if (entry.behavior != null) {
-                float cx = p.getX();
-                float cy = p.getY();
-                float r = p.getSize() / 2f;
-                for (int j = enemies.size - 1; j >= 0; j--) {
-                    EnemyEntity e = enemies.get(j);
-                    float closestX = Math.max(e.getX(), Math.min(cx, e.getX() + e.getWidth()));
-                    float closestY = Math.max(e.getY(), Math.min(cy, e.getY() + e.getHeight()));
-                    float dx = cx - closestX;
-                    float dy = cy - closestY;
-                    if (dx * dx + dy * dy <= r * r) {
-                        e.takeDamage(1);
-                        if (!e.isAlive() && onEnemyDeath != null) {
-                            onEnemyDeath.accept(e);
-                        }
-                        p.setAlive(false);
-                        entries.removeIndex(i);
-                        break;
-                    }
+                if (checkEnemyCollision(p, enemies, onEnemyDeath)) {
+                    entries.removeIndex(i);
                 }
-            } else if (circleRectCollision(p, player)) {
-                onHit.accept(p);
+            } else if (checkPlayerCollision(p, player, onHit)) {
                 p.setAlive(false);
                 entries.removeIndex(i);
             }
         }
     }
 
-    private boolean circleRectCollision(ProjectileEntity p, Player player) {
+    private boolean checkBounds(ProjectileEntity p) {
+        return p.getX() < -p.getSize() || p.getX() > GameConfig.MAP_WIDTH + p.getSize()
+                || p.getY() < -p.getSize() || p.getY() > GameConfig.MAP_HEIGHT + p.getSize();
+    }
+
+    private boolean checkEnemyCollision(ProjectileEntity p, Array<EnemyEntity> enemies, Consumer<EnemyEntity> onEnemyDeath) {
+        float cx = p.getX();
+        float cy = p.getY();
+        float r = p.getSize() / 2f;
+        for (int j = enemies.size - 1; j >= 0; j--) {
+            EnemyEntity e = enemies.get(j);
+            float closestX = Math.max(e.getX(), Math.min(cx, e.getX() + e.getWidth()));
+            float closestY = Math.max(e.getY(), Math.min(cy, e.getY() + e.getHeight()));
+            float dx = cx - closestX;
+            float dy = cy - closestY;
+            if (dx * dx + dy * dy <= r * r) {
+                e.takeDamage(1);
+                if (!e.isAlive() && onEnemyDeath != null) {
+                    onEnemyDeath.accept(e);
+                }
+                p.setAlive(false);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkPlayerCollision(ProjectileEntity p, Player player, Consumer<ProjectileEntity> onHit) {
         float cx = p.getX();
         float cy = p.getY();
         float r = p.getSize() / 2f;
@@ -86,7 +96,11 @@ public class ProjectileSystem {
 
         float dx = cx - closestX;
         float dy = cy - closestY;
-        return dx * dx + dy * dy <= r * r;
+        boolean hit = dx * dx + dy * dy <= r * r;
+        if (hit) {
+            onHit.accept(p);
+        }
+        return hit;
     }
 
     public void render(ShapeRenderer shapeRenderer) {

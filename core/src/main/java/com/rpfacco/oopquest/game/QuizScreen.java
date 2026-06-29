@@ -3,30 +3,19 @@ package com.rpfacco.oopquest.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.rpfacco.oopquest.game.data.model.QuizData;
 import com.rpfacco.oopquest.game.data.loader.QuizLoader;
-import com.rpfacco.oopquest.game.OopQuest;
 
-public class QuizScreen implements Screen {
+public class QuizScreen extends BaseScreen {
 
-    private final OopQuest app;
     private final Screen gameplayScreen;
     private final String quizId;
     private final QuizData quiz;
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
-    private SpriteBatch batch;
-    private BitmapFont font;
     private ShapeRenderer shapeRenderer;
     private Rectangle[] choiceRects;
     private Vector3 touchPos;
@@ -35,7 +24,7 @@ public class QuizScreen implements Screen {
     private boolean gameOver;
 
     public QuizScreen(OopQuest app, Screen gameplayScreen, String quizId, QuizData quiz) {
-        this.app = app;
+        super(app);
         this.gameplayScreen = gameplayScreen;
         this.quizId = quizId;
         this.quiz = quiz;
@@ -43,13 +32,7 @@ public class QuizScreen implements Screen {
 
     @Override
     public void show() {
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(GameConfig.MAP_WIDTH, GameConfig.MAP_HEIGHT, camera);
-        camera.position.set(GameConfig.MAP_WIDTH / 2f, GameConfig.MAP_HEIGHT / 2f, 0);
-        camera.update();
-
-        batch = new SpriteBatch();
-        font = new BitmapFont();
+        super.show();
         font.getData().setScale(2);
         shapeRenderer = new ShapeRenderer();
         touchPos = new Vector3();
@@ -149,19 +132,8 @@ public class QuizScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        if (width <= 0 || height <= 0) return;
-        viewport.update(width, height);
-    }
-
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
-
-    @Override
     public void dispose() {
-        batch.dispose();
-        font.dispose();
         shapeRenderer.dispose();
+        super.dispose();
     }
 }
