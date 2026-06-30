@@ -9,6 +9,7 @@ import com.rpfacco.oopquest.game.data.model.ProjectileEntity;
 public class EnemySystem {
 
     private Array<EnemyEntity> enemies;
+    private final Array<EnemyEntity> aliveEnemiesBuffer = new Array<>();
 
     public void setEnemies(Array<EnemyEntity> enemies) {
         this.enemies = enemies;
@@ -82,13 +83,13 @@ public class EnemySystem {
     }
 
     public Array<EnemyEntity> getAliveEnemies() {
+        aliveEnemiesBuffer.clear();
         if (enemies == null) return null;
-        Array<EnemyEntity> alive = new Array<>();
         for (EnemyEntity enemy : enemies) {
             if (enemy.isAlive()) {
-                alive.add(enemy);
+                aliveEnemiesBuffer.add(enemy);
             }
         }
-        return alive;
+        return aliveEnemiesBuffer;
     }
 }

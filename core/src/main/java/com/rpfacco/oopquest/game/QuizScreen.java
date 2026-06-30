@@ -16,21 +16,22 @@ public class QuizScreen extends BaseScreen {
     private final String quizId;
     private final QuizData quiz;
     private final DataManager dataManager;
+    private final InputHandler inputHandler;
 
     private ShapeRenderer shapeRenderer;
     private Rectangle[] choiceRects;
-    private Vector3 touchPos;
     private GlyphLayout glyphLayout;
     private float questionY;
     private boolean leaving;
     private boolean gameOver;
 
-    public QuizScreen(OopQuest app, Screen gameplayScreen, String quizId, QuizData quiz, DataManager dataManager) {
+    public QuizScreen(OopQuest app, Screen gameplayScreen, String quizId, QuizData quiz, DataManager dataManager, InputHandler inputHandler) {
         super(app);
         this.gameplayScreen = gameplayScreen;
         this.quizId = quizId;
         this.quiz = quiz;
         this.dataManager = dataManager;
+        this.inputHandler = inputHandler;
     }
 
     @Override
@@ -38,7 +39,6 @@ public class QuizScreen extends BaseScreen {
         super.show();
         font.getData().setScale(4);
         shapeRenderer = new ShapeRenderer();
-        touchPos = new Vector3();
         glyphLayout = new GlyphLayout();
 
         int n = quiz.getChoices().length;
@@ -131,10 +131,8 @@ public class QuizScreen extends BaseScreen {
     }
 
     private void handleInput() {
-        if (!Gdx.input.justTouched()) return;
-
-        touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-        viewport.unproject(touchPos);
+        Vector3 touchPos = inputHandler.handleTouch();
+        if (touchPos == null) return;
 
         for (int i = 0; i < choiceRects.length; i++) {
             if (choiceRects[i].contains(touchPos.x, touchPos.y)) {

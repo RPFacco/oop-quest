@@ -28,6 +28,7 @@ public class WorldRenderer {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         font.draw(batch, "Lives: " + gameState.getLives(), 20, GameConfig.MAP_HEIGHT - 20);
+        font.draw(batch, "Press E to shoot", 20, GameConfig.MAP_HEIGHT - 20 - font.getLineHeight() * 1.2f);
         glyphLayout.setText(font, "ESC: Reset Game");
         font.draw(batch, "ESC: Reset Game", GameConfig.MAP_WIDTH - glyphLayout.width - 20, GameConfig.MAP_HEIGHT - 20);
         batch.end();

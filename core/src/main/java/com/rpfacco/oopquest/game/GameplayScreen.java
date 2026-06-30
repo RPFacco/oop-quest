@@ -112,7 +112,7 @@ public class GameplayScreen extends BaseScreen {
 
     private void onNpcTrigger(String quizId, QuizData quiz) {
         player.setTarget(player.getX(), player.getY());
-        app.setScreen(new QuizScreen(app, this, quizId, quiz, app.getDataManager()));
+        app.setScreen(new QuizScreen(app, this, quizId, quiz, app.getDataManager(), inputHandler));
     }
 
     private void onEnemyDeath(EnemyEntity e) {
@@ -121,7 +121,7 @@ public class GameplayScreen extends BaseScreen {
         if (app.getGameState().isCompleted(quizId)) return;
         QuizData quiz = app.getDataManager().getQuiz(quizId);
         if (quiz != null) {
-            app.setScreen(new QuizScreen(app, this, quizId, quiz, app.getDataManager()));
+            app.setScreen(new QuizScreen(app, this, quizId, quiz, app.getDataManager(), inputHandler));
         }
     }
 

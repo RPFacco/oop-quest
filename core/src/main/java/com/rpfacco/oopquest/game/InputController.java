@@ -40,8 +40,8 @@ public class InputController {
                 float dy = target.getCenterY() - player.getCenterY();
                 float dist = (float) Math.sqrt(dx * dx + dy * dy);
                 if (dist == 0) dist = 1f;
-                p.setVx(-dy / dist);
-                p.setVy(dx / dist);
+                p.setVx(dx / dist);
+                p.setVy(dy / dist);
                 p.setSpeed(1800f);
                 p.setSize(8);
                 p.setAlive(true);
